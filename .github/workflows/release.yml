@@ -100,12 +100,12 @@ jobs:
 
             **One-liner:**
             ```bash
-            curl -fsSL https://raw.githubusercontent.com/hermetic-sys/Hermetic-Vault/main/scripts/install.sh | sh
+            curl -fsSL https://raw.githubusercontent.com/hermetic-sys/hermetic/main/scripts/install.sh | sh
             ```
 
             **Manual:**
             ```bash
-            curl -fsSL https://github.com/hermetic-sys/Hermetic-Vault/releases/download/${{ github.ref_name }}/hermetic-${GITHUB_REF_NAME#v}-linux-x86_64.tar.gz | tar xz
+            curl -fsSL https://github.com/hermetic-sys/hermetic/releases/download/${{ github.ref_name }}/hermetic-${GITHUB_REF_NAME#v}-linux-x86_64.tar.gz | tar xz
             sudo mv hermetic /usr/local/bin/
             hermetic doctor
             ```

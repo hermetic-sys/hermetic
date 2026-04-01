@@ -3,13 +3,13 @@
 # https://hermeticsys.com
 #
 # Usage: curl -fsSL https://hermeticsys.com/install.sh | sh
-#    or: curl -fsSL https://raw.githubusercontent.com/hermetic-sys/Hermetic-Vault/main/scripts/install.sh | sh
+#    or: curl -fsSL https://raw.githubusercontent.com/hermetic-sys/hermetic/main/scripts/install.sh | sh
 #
 # Respects: HERMETIC_INSTALL_DIR (default: /usr/local/bin or ~/.local/bin)
 
 set -e
 
-REPO="hermetic-sys/Hermetic-Vault"
+REPO="hermetic-sys/hermetic"
 BINARY="hermetic"
 
 # ── Parse flags ──
@@ -140,7 +140,7 @@ if [ "$VERIFY" = true ]; then
     curl -sSL -o "${TMPDIR}/hermetic.tar.gz.asc" \
       "${RELEASE_URL}.asc" 2>/dev/null || true
     curl -sSL -o "${TMPDIR}/SIGNING_KEY.pub" \
-      "https://raw.githubusercontent.com/hermetic-sys/Hermetic-Vault/main/SIGNING_KEY.pub" 2>/dev/null || true
+      "https://raw.githubusercontent.com/hermetic-sys/hermetic/main/SIGNING_KEY.pub" 2>/dev/null || true
 
     if [ -f "${TMPDIR}/hermetic.tar.gz.asc" ] && [ -f "${TMPDIR}/SIGNING_KEY.pub" ]; then
       gpg --batch --import "${TMPDIR}/SIGNING_KEY.pub" 2>/dev/null

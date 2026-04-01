@@ -46,7 +46,7 @@ pub enum AuthScheme {
     Basic,
     /// Custom header injection: `<name>: <secret>`
     ///
-    /// SG-1 Extension (HM-CONST-AMEND-005). Used by APIs that accept credentials
+    /// SG-1 Extension. Used by APIs that accept credentials
     /// in non-standard headers (e.g., `X-Goog-Api-Key`, `Api-Token`).
     /// The header name must be a valid RFC 7230 token and must not be on the
     /// HC-7 forbidden header list. Validation is performed at the daemon SG-1 gate.

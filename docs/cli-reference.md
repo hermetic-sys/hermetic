@@ -1,6 +1,6 @@
 # CLI Reference
 
-Single ~12 MB binary, 31 subcommands. All commands accept `--env <n>` to select a named environment (default: `default`).
+Single binary. Community Edition subcommands listed below. All commands accept `--env <n>` to select a named environment (default: `default`).
 
 ```bash
 hermetic [--env <n>] <command> [options]
@@ -263,7 +263,7 @@ hermetic request --secret stripe-key \
 | `--header <key: value>` | Additional header (repeatable). forbidden headers stripped. |
 | `--auto-start` | Offer to start daemon if not running (interactive only). Only prompts when flag is passed AND stdin is a TTY. |
 
-Uses the full handle protocol: issue → redeem → inject → transport → zeroize. the highest security tier tier. SSRF protection and domain binding enforced.
+Uses the full handle protocol: issue → redeem → inject → transport → zeroize. BROKERED tier. SSRF protection and domain binding enforced.
 
 **Access pattern:** Daemon (UDS handle protocol).
 
@@ -306,7 +306,7 @@ hermetic exec --secret db-password --env-var DATABASE_URL -- ./migrate.sh
 | `--auto-start` | Offer to start daemon if not running (interactive only). Only prompts when flag is passed AND stdin is a TTY. |
 | `-- <command> [args...]` | Command and arguments to execute. |
 
-**Security tier:** a lower security tier. The secret exists in the child process environment for its lifetime. `/proc/<pid>/environ` is readable by same-UID processes .
+**Security tier:** TRANSIENT. The secret exists in the child process environment for its lifetime.
 
 **Differences from MCP env_spawn:** `exec` inherits the parent environment. MCP `env_spawn` uses `env_clear` (untrusted agent environment). binary blocklist applies to both.
 
@@ -415,7 +415,7 @@ Exit codes: `0` = all checks pass (or warnings only), `1` = issues found.
 
 ---
 
-### dashboard
+### dashboard *(Pro)*
 
 Interactive terminal UI (TUI) dashboard.
 
@@ -444,7 +444,7 @@ Full-screen terminal interface with live-updating vault and daemon status panels
 
 ---
 
-### web
+### web *(Pro)*
 
 Browser-based dashboard.
 

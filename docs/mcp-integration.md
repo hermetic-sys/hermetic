@@ -186,7 +186,7 @@ Community Edition supports 1 environment (`default`). Multiple environments requ
 
 ## MCP Tools Reference
 
-The bridge exposes 4 operational tools + 1 read-only setup helper. Every tool response obeys no secret value ever appears in any response, error message, notification, or log output.
+The bridge exposes 4 operational tools + 1 read-only setup helper. No secret value ever appears in any response, error message, notification, or log output.
 
 ### hermetic_authenticated_request
 
@@ -282,9 +282,9 @@ Spawn a child process with a secret injected as an environment variable.
 **Security enforcements:**
 
 - binary blocklist: shells (sh, bash, zsh, etc.), interpreters (python, node, ruby, etc.), and wrappers (env, xargs, nohup, etc.) are blocked.
-- Environment is sanitized via `env_clear` (MCP env_spawn uses a clean environment, unlike CLI `hermetic exec` which inherits parent env ).
+- Environment is sanitized via `env_clear` (MCP env_spawn uses a clean environment, unlike CLI `hermetic exec` which inherits parent env).
 
-**Trust tier:** a lower security tier. The secret exists in the child process's environment for the duration of execution. This is a lower security tier than `authenticated_request` (the highest security tier).
+**Trust tier:** TRANSIENT. The secret exists in the child process's environment for the duration of execution. This is a lower security tier than `authenticated_request` (BROKERED).
 
 ---
 
@@ -331,7 +331,7 @@ Instead, the agent helps the user set up secrets by providing the CLI command vi
 3. `rpassword` reads the secret with no echo — the value goes straight into the vault.
 4. The agent never observes the secret at any point.
 
-This is a deliberate architectural constraint, not a missing feature. See the [Security Model](security-model.md) for the full rationale.
+This is a deliberate architectural constraint, not a missing feature. See the [Security Overview](security-overview.md) for more.
 
 ---
 
@@ -394,7 +394,7 @@ When `hermetic_env_spawn` rejects a command on the binary blocklist, the error e
   "code": -32003,
   "message": "blocked binary: python is on the binary blocklist",
   "data": {
-    "reason": "Shells and interpreters can leak secrets via subshells, history, or debug output. The binary blocklist prevents to prevent this.",
+    "reason": "Shells and interpreters can leak secrets via subshells, history, or debug output. The binary blocklist prevents this.",
     "fix": "Call the target script directly (e.g., './myscript.py' instead of 'python myscript.py'), or use hermetic_authenticated_request if making an HTTP call."
   }
 }
@@ -461,7 +461,7 @@ The MCP bridge sends all diagnostics to stderr, not stdout. If your client captu
 
 ### Community Edition banner in MCP responses
 
-This is The Community Edition banner appears in the MCP `initialize` response. It does not affect functionality. It is removed with a [commercial license](https://hermeticsys.com/license).
+The Community Edition banner appears in the MCP `initialize` response. It does not affect functionality. It is removed with a [commercial license](https://hermeticsys.com/license).
 
 ---
 
@@ -483,5 +483,5 @@ The audit log (CLI-only, `hermetic audit`) records all MCP operations including 
 
 - **[Getting Started](getting-started.md)** — if you haven't set up Hermetic yet
 - **[Python SDK Guide](python-sdk.md)** — using Hermetic from Python scripts and frameworks
-- **[CLI Reference](cli-reference.md)** — all 31 subcommands
-- **[Security Model](security-model.md)** — full threat model and known limitations
+- **[CLI Reference](cli-reference.md)** — all subcommands
+- **[Security Overview](security-overview.md)** — security model and scope

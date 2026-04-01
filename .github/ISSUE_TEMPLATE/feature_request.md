@@ -29,7 +29,7 @@ Does this feature touch any of the following?
 - [ ] Python FFI boundary (hermetic-sdk)
 - [ ] None of the above
 
-If any boxes are checked, this feature may require a constitutional amendment process per [GOVERNANCE_RULES.md](../docs/governance/GOVERNANCE_RULES.md). Security-affecting features need Mentor authorization.
+If any boxes are checked, this feature may require a constitutional amendment process per the project governance documentation. Security-affecting features require maintainer review.
 
 ## Additional Context
 

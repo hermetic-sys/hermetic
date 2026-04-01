@@ -19,7 +19,7 @@ framework, it has zero production deployments at the time of initial release.
 ## Known Limitations
 
 Hermetic publishes all known limitations openly. See the
-[Known Limitations](README.md#known-limitations) section of the README for
+[Known Limitations](README.md#scope) section of the README for
 the complete list, including:
 
 - Same-UID processes have full daemon access

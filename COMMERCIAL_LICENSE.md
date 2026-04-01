@@ -10,7 +10,7 @@ Hermetic is distributed as a compiled binary (free for Community, licensed for P
 
 - **You modify the open-source crates and deploy those modifications as a network service** and do not want to publish your source code (the AGPL network clause requires this).
 - **Your organization's policy prohibits AGPL software** in production systems.
-- **You need more than 1 environment or more than 7 days of audit retention** — these are Community Edition limits. Individual, Startup, and Enterprise tiers expand these.
+- **You need more than 1 environment or more than 7 days of audit retention** — these are Community Edition limits. Pro tier expands these.
 - **You need priority CVE notifications, signed binary builds, SLA guarantees, or indemnification.**
 
 If none of these apply, the Community Edition is free forever with no registration required.
@@ -110,7 +110,7 @@ When you purchase a commercial license, you receive:
 1. A signed commercial license agreement (PDF) granting AGPL obligation waiver for the specified tier and term.
 2. A `license.key` file for offline tier activation.
 3. Access to the support channel corresponding to your tier.
-4. (Enterprise only) A named point of contact and SLA agreement.
+4. A named point of contact and SLA agreement (Pro).
 
 The license is per-organization, not per-machine. You may deploy Hermetic on as many machines as needed within your organization.
 

@@ -47,8 +47,8 @@ If you copy Hermetic's source code into your application, that creates a derivat
 
 The Community Edition is free forever and enforces four limits via constitutional amendments:
 
-| Limit | Amendment | What Happens |
-|-------|-----------|-------------|
+| Limit | What Happens |
+|-------|-------------|
 | 10 secrets | Adding an 11th secret returns an error with upgrade instructions. |
 | 1 named environment (`default`) | Creating or using a non-default environment returns an error. |
 | 7-day audit log retention | Entries older than 7 days are pruned on daemon startup and every 24 hours. |

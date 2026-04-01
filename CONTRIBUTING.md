@@ -74,7 +74,7 @@ Open an issue on GitHub with:
    cargo clippy -p hermetic-core -p hermetic-transport -p hermetic-sdk -- -D warnings
    cargo deny check licenses
    ```
-7. Open a pull request against `main`
+6. Open a pull request against `main`
 
 All PRs require CI to pass (build, test, clippy, deny) before merge. Branch protection is enforced — no force pushes to `main`, no merge without CI green.
 

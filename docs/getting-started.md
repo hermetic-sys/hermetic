@@ -15,7 +15,7 @@ This guide walks you from zero to your first agent-authenticated API request. By
 curl -sSf https://hermeticsys.com/install.sh | sh
 ```
 
-This downloads and installs a single ~12 MB binary with 31 subcommands. Verify the installation:
+This downloads and installs a single binary. Verify the installation:
 
 ```bash
 hermetic version
@@ -251,7 +251,7 @@ From the CLI:
 hermetic exec --secret deploy-token --env-var DEPLOY_TOKEN -- ./deploy.sh
 ```
 
-Note: `exec` is a lower security tier tier — the secret exists in the child process environment. The binary blocklist prevents shells and interpreters from being spawned, but the child process can read its own environment.
+Note: `exec` is TRANSIENT tier — the secret exists in the child process environment. The binary blocklist prevents shells and interpreters from being spawned, but the child process can read its own environment.
 
 ### List your secrets
 
@@ -373,7 +373,7 @@ hermetic completions zsh > ~/.zfunc/_hermetic
 hermetic completions fish > ~/.config/fish/completions/hermetic.fish
 ```
 
-This gives you tab completion for all 31 subcommands, flags, and secret names.
+This gives you tab completion for all subcommands, flags, and secret names.
 
 ### Prompt integration
 
@@ -453,7 +453,7 @@ hermetic doctor
 The doctor runs 15 deep checks across vault, daemon, socket, and session state. Every failed check prints the exact command to fix it — copy, paste, done.
 
 ```bash
-hermetic --help           # All 31 subcommands
+hermetic --help           # All subcommands
 hermetic <command> --help # Help for a specific command
 ```
 
@@ -461,7 +461,7 @@ hermetic <command> --help # Help for a specific command
 
 ## Dashboards
 
-### Terminal UI (TUI)
+### Terminal UI (TUI) *(Pro)*
 
 ```bash
 hermetic dashboard
@@ -469,7 +469,7 @@ hermetic dashboard
 
 Full-screen interactive dashboard with vault/daemon status, secret list, and actions (`a` to add, `d` to delete, `s` to seal). Press `x` for doctor diagnostics with selectable fix commands, `p` for security properties and maturity progression.
 
-### Web Dashboard
+### Web Dashboard *(Pro)*
 
 ```bash
 hermetic web
@@ -481,8 +481,7 @@ Browser dashboard at `http://127.0.0.1:8742` with 4-tab layout (Overview, Secret
 
 ## What's Next
 
-- **[Security Model](security-model.md)** — what Hermetic protects against and what it doesn't 
+- **[Security Overview](security-overview.md)** — security model and scope
 - **[MCP Integration Guide](mcp-integration.md)** — detailed setup for each supported AI platform
 - **[Python SDK Guide](python-sdk.md)** — using Hermetic from Python with PyO3 escape-hatch blocking
-- **[CLI Reference](cli-reference.md)** — all 31 subcommands with full options and examples
-- **[Architecture](architecture/)** — the five interlocking security mechanisms in depth
+- **[CLI Reference](cli-reference.md)** — all subcommands with full options and examples

@@ -186,7 +186,7 @@ Most security tools ask you to trust their claims. We publish the proof.
 ```bash
 sha256sum hermetic                     # Compare against release SHA256SUMS
 gpg --import SIGNING_KEY.pub
-gpg --verify hermetic.sig hermetic
+gpg --verify hermetic-v1.0.0-linux-x86_64.sig hermetic-v1.0.0-linux-x86_64
 ```
 
 <br/>

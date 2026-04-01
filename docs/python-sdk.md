@@ -258,7 +258,7 @@ Each client connects to its own daemon instance. Environments are fully isolated
 
 ## Architectural Constraint
 
-The SDK does not depend on `hermetic-core`. This is a constitutional design decision : the SDK cannot decrypt the vault, access encryption keys, or bypass daemon policy. The daemon is the single trust root.
+The SDK does not depend on `hermetic-core`. This is a constitutional design decision: the SDK cannot decrypt the vault, access encryption keys, or bypass daemon policy. The daemon is the single trust root.
 
 The SDK's dependency chain:
 
@@ -281,18 +281,18 @@ This means the SDK cannot perform any vault operation that the daemon doesn't ex
 
 ## Security Model
 
-The Python SDK achieves the highest security tier security tier — the same as MCP `authenticated_request`. Secret bytes exist only in Rust `Zeroizing<Vec<u8>>` memory for approximately 1ms during HTTP request execution.
+The Python SDK achieves the highest security tier — the same as MCP `authenticated_request`. Secret bytes exist only in Rust zeroizing memory for approximately 1ms during HTTP request execution.
 
 | Invariant | Status | Enforcement |
 |-----------|--------|-------------|
-| Secret bytes never cross FFI boundary: Secret bytes never cross FFI boundary | Enforced | No `PyBytes`/`PyString` created from secret material in any `#[pymethod]` |
-| No Python-visible secret representation: No Python-visible secret representation | Enforced | escape-hatch blocking, all tested |
-| HTTPS-only: HTTPS-only  | Enforced | `hermetic-transport` rejects non-HTTPS URLs |
-| SSRF protection: SSRF protection  | Enforced | blocked IP ranges via transport layer |
-| Zeroize before await: Zeroize before await  | Enforced | Transport zeroizes credential before async runtime |
-| Single-use handle redemption: Single-use handle redemption  | Enforced | Daemon atomic atomic consumption |
+| Secret bytes never cross FFI boundary | Enforced | No `PyBytes`/`PyString` created from secret material in any `#[pymethod]` |
+| No Python-visible secret representation | Enforced | Escape-hatch blocking, all tested |
+| HTTPS-only | Enforced | `hermetic-transport` rejects non-HTTPS URLs |
+| SSRF protection | Enforced | Blocked IP ranges via transport layer |
+| Zeroize before await | Enforced | Transport zeroizes credential before async runtime |
+| Single-use handle redemption | Enforced | Daemon atomic consumption |
 | Process UID validation | Enforced | Daemon verifies SDK process UID |
-| No secrets in error messages: No secrets in error messages | Enforced | All error paths audited |
+| No secrets in error messages | Enforced | All error paths audited |
 
 ---
 
@@ -323,6 +323,6 @@ You're hitting an escape-hatch block. This is intentional — the operation you'
 ## Next Steps
 
 - **[MCP Integration Guide](mcp-integration.md)** — connecting AI agents via MCP
-- **[CLI Reference](cli-reference.md)** — all 31 subcommands
-- **[Security Model](security-model.md)** — full threat model and known limitations
+- **[CLI Reference](cli-reference.md)** — all subcommands
+- **[Security Overview](security-overview.md)** — security model and scope
 - **[Getting Started](getting-started.md)** — initial Hermetic setup
