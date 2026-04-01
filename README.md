@@ -6,10 +6,9 @@
 <br/>
 <br/>
 
-**Agent-Isolated Credential Broker**
+**Agent-Isolated Credential Broker for AI Agents**
 
-Other tools manage tokens that agents still hold.<br/>
-Hermetic ensures the agent never holds anything.
+Your API keys never enter the AI agent's memory. Ever.
 
 <br/>
 
@@ -51,6 +50,8 @@ Agent  →  "call Stripe API"  →  Daemon (injects credential)  →  Stripe  �
 ```
 
 Hermetic is a local daemon that makes API calls **on behalf** of AI agents. The agent sends a request with an opaque 256-bit handle. The daemon resolves it to the real credential, makes the HTTPS call with full SSRF protection, and returns **only the API response**. The agent never sees, holds, or transmits the credential.
+
+> **Other tools manage tokens that agents still hold. Hermetic ensures the agent never holds anything.**
 
 ```bash
 # Install (single binary, no dependencies)
