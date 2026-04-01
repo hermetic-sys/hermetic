@@ -6,9 +6,10 @@
 <br/>
 <br/>
 
-**Agent-Isolated Credential Broker for AI Agents**
+**Agent-Isolated Credential Broker**
 
-Your API keys never enter the AI agent's memory. Ever.
+Other tools manage tokens that agents still hold.<br/>
+Hermetic ensures the agent never holds anything.
 
 <br/>
 
