@@ -1,0 +1,39 @@
+[package]
+name = "hermetic-core"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+description = "Hermetic — Zero-knowledge credential broker for AI agents"
+homepage = "https://hermeticsys.com"
+repository = "https://github.com/hermetic-sys/Hermetic-Vault"
+keywords = ["security", "credentials", "ai-agents", "zero-knowledge"]
+categories = ["cryptography", "authentication"]
+publish = false
+
+[lints.rust]
+# deny (not forbid) so that lib.rs cfg_attr can upgrade to forbid in production
+# while allowing Day 3 memory scan tests to use #[allow(unsafe_code)] in test builds.
+unsafe_code = "deny"
+
+[dependencies]
+# Day 1: KDF chain (CERTIFIED)
+argon2 = "0.5"
+hkdf = "0.12"
+sha2 = "0.10"
+ring = "0.17"
+zeroize = { version = "1.8", features = ["derive"] }
+thiserror = "2"
+
+# Day 4: crypto + metadata + secret model
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["v4"] }
+hex = "0.4"
+
+# Day 4: SQLCipher — platform-gated (requires OpenSSL, not available under Windows MSVC)
+[target.'cfg(not(target_os = "windows"))'.dependencies]
+rusqlite = { version = "0.31", features = ["bundled-sqlcipher"] }
+
+[dev-dependencies]
+tempfile = "3"
+hex = "0.4" # Already a [dependencies] — added here for integration test access

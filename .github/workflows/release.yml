@@ -1,0 +1,116 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build Release Binary
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsqlcipher-dev pkg-config
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.93.1"
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: release-${{ hashFiles('Cargo.lock') }}
+
+      - name: Build release binary
+        run: cargo build --release --locked
+
+      - name: Run tests
+        run: cargo test --workspace --locked
+
+      - name: Verify binary
+        run: |
+          ./target/release/hermetic version
+          ./target/release/hermetic doctor || true
+          file target/release/hermetic
+          ls -la target/release/hermetic
+
+      - name: Package
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          mkdir -p package
+          cp target/release/hermetic package/
+          cp README.md LICENSE package/
+          cd package
+          tar czf ../hermetic-${VERSION}-linux-x86_64.tar.gz *
+          cd ..
+          sha256sum hermetic-${VERSION}-linux-x86_64.tar.gz > SHA256SUMS
+
+      - name: Import GPG key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          if [ -z "$GPG_PRIVATE_KEY" ]; then
+            echo "GPG key not configured — skipping import"
+            exit 0
+          fi
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          echo "$(gpg --list-keys --with-colons dev@hermeticsys.com | grep fpr | head -1 | cut -d: -f10):6:" | gpg --import-ownertrust
+
+      - name: Sign release artifacts
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          if [ -z "$GPG_PRIVATE_KEY" ]; then
+            echo "GPG key not configured — skipping signing"
+            exit 0
+          fi
+          gpg --batch --yes --detach-sign --armor hermetic-*.tar.gz
+          gpg --batch --yes --detach-sign --armor SHA256SUMS
+
+      - name: Collect release artifacts
+        id: artifacts
+        run: |
+          FILES="hermetic-*-linux-x86_64.tar.gz\nSHA256SUMS"
+          if ls *.asc 1>/dev/null 2>&1; then
+            FILES="$FILES\nhermetic-*-linux-x86_64.tar.gz.asc\nSHA256SUMS.asc"
+          fi
+          echo "files<<EOF" >> "$GITHUB_OUTPUT"
+          printf "$FILES\n" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.artifacts.outputs.files }}
+          generate_release_notes: true
+          body: |
+            ## Install
+
+            **One-liner:**
+            ```bash
+            curl -fsSL https://raw.githubusercontent.com/hermetic-sys/Hermetic-Vault/main/scripts/install.sh | sh
+            ```
+
+            **Manual:**
+            ```bash
+            curl -fsSL https://github.com/hermetic-sys/Hermetic-Vault/releases/download/${{ github.ref_name }}/hermetic-${GITHUB_REF_NAME#v}-linux-x86_64.tar.gz | tar xz
+            sudo mv hermetic /usr/local/bin/
+            hermetic doctor
+            ```
+
+            **Quick start:**
+            ```bash
+            hermetic init --quickstart
+            ```

@@ -1,0 +1,27 @@
+[package]
+name = "hermetic-transport"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+description = "Hermetic — Zero-knowledge credential broker for AI agents"
+homepage = "https://hermeticsys.com"
+repository = "https://github.com/hermetic-sys/Hermetic-Vault"
+keywords = ["security", "credentials", "ai-agents", "zero-knowledge"]
+categories = ["cryptography", "authentication"]
+publish = false
+
+[dependencies]
+base64 = "0.22"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "cookies"] }
+serde_json = { version = "1", optional = true }
+tokio = { version = "1", features = ["net"] }
+url = "2"
+zeroize = { version = "1.8", features = ["derive"] }
+
+[features]
+default = []
+oauth-refresh = ["dep:serde_json", "tokio/rt"]
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+wiremock = "0.6"

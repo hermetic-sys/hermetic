@@ -1,0 +1,16 @@
+# Hermetic CODEOWNERS
+# Update @hermetic-sys/maintainers with actual GitHub username(s) after org creation.
+
+# Default owner for everything
+* @hermetic-sys/maintainers
+
+# Security-critical crates — require explicit review
+crates/hermetic-core/    @hermetic-sys/maintainers
+crates/hermetic-transport/ @hermetic-sys/maintainers
+crates/hermetic-sdk/     @hermetic-sys/maintainers
+
+# Governance artifacts — constitutional changes require owner review
+FROZEN_HASHES.sha256     @hermetic-sys/maintainers
+deny.toml                @hermetic-sys/maintainers
+LICENSE                  @hermetic-sys/maintainers
+SECURITY.md              @hermetic-sys/maintainers
