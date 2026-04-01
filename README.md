@@ -101,7 +101,7 @@ RAT sends key to C2       → ✓ Domain binding: DENIED
 </tr>
 </table>
 
-> Tested against 10 real-world attacks including the [Axios supply chain compromise](https://hermeticsys.com/blog/axios-defense) (March 2026, North Korean APT), [LiteLLM .pth credential stealer](https://hermeticsys.com/blog/litellm-defense) (March 2026, TeamPCP), and [CVE-2025-6514 mcp-remote RCE](https://hermeticsys.com/blog/mcp-remote-defense) (CVSS 9.6). Full simulation results published.
+> Tested against real-world attacks including the [Axios supply chain compromise](https://hermeticsys.com/blog/axios-defense) (March 2026, North Korean APT), [LiteLLM .pth credential stealer](https://hermeticsys.com/blog/litellm-defense) (March 2026, TeamPCP), and [CVE-2025-6514 mcp-remote RCE](https://hermeticsys.com/blog/mcp-remote-defense) (CVSS 9.6). Full simulation results published.
 
 <br/>
 

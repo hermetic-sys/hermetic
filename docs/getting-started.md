@@ -54,7 +54,7 @@ You don't need an existing `.env` file to get started. There are three paths:
 
 **Inline batch wizard during quickstart.** When the quickstart wizard doesn't find a `.env` file, it falls back to an inline batch wizard — "Paste API keys now?" — letting you paste one or more keys directly. Each key is auto-detected against built-in service templates, configured, and encrypted on the spot.
 
-**Scan your project for exposed keys.**
+**Scan your project for exposed keys.** *(Pro)*
 
 ```bash
 hermetic scan .
@@ -104,7 +104,7 @@ hermetic add --wizard --batch
 
 Walks you through adding multiple keys in one session — paste each one, confirm detection, and move to the next.
 
-**Scan project files for exposed keys:**
+**Scan project files for exposed keys:** *(Pro)*
 
 ```bash
 hermetic scan .
@@ -161,7 +161,7 @@ For detailed system diagnostics:
 hermetic doctor
 ```
 
-The doctor command runs 15 deep checks across vault, daemon process, socket connectivity, and session/integration. It tests actual daemon responsiveness (not just file existence), detects multiple daemon processes, expired sessions, orphaned sockets, and binary mismatches. Every failed check prints the exact command to fix it. Works when the daemon is down — that's when you need diagnostics most.
+The doctor command runs deep checks across vault, daemon process, socket connectivity, and session/integration. It tests actual daemon responsiveness (not just file existence), detects multiple daemon processes, expired sessions, orphaned sockets, and binary mismatches. Every failed check prints the exact command to fix it. Works when the daemon is down — that's when you need diagnostics most.
 
 ---
 
@@ -284,7 +284,7 @@ Immediately zeroizes all key material, invalidates all active handles, and destr
 When your agent calls `hermetic_authenticated_request`:
 
 1. **MCP bridge** receives the JSON-RPC call over stdio. It connects to the daemon via Unix domain socket.
-2. **Daemon** verifies the caller's UID via SO_PEERCRED. Issues a 256-bit CSPRNG handle — single-use, UID-bound, domain-bound, 30-second TTL, version-fingerprinted.
+2. **Daemon** verifies the caller's UID via SO_PEERCRED. Issues a 256-bit CSPRNG handle — single-use, UID-bound, domain-bound, short TTL, version-fingerprinted.
 3. **MCP bridge** redeems the handle. The daemon atomically removes it from the handle map before validation. Decrypts the secret into `Zeroizing<Vec<u8>>` memory.
 4. **Transport layer** parses the URL, resolves DNS, validates all IPs against blocked SSRF ranges, pins the validated IP. Strips forbidden headers. Injects the credential via the configured auth scheme. **Zeroizes the secret before the first `.await` point**.
 5. **HTTP request** is sent over HTTPS (HTTPS only). Redirects are re-validated per-hop with DNS re-resolve. Credentials are never resent on redirects.
@@ -450,7 +450,7 @@ Most common errors include a fix command in the error output itself. When in dou
 hermetic doctor
 ```
 
-The doctor runs 15 deep checks across vault, daemon, socket, and session state. Every failed check prints the exact command to fix it — copy, paste, done.
+The doctor runs deep checks across vault, daemon, socket, and session state. Every failed check prints the exact command to fix it — copy, paste, done.
 
 ```bash
 hermetic --help           # All subcommands
@@ -476,6 +476,28 @@ hermetic web
 ```
 
 Browser dashboard at `http://127.0.0.1:8742` with 4-tab layout (Overview, Secrets, Security, CLI Reference). Includes a Doctor panel that shows diagnostic issues with click-to-copy fix commands, health scoring, maturity progression, and auto-refresh every 5 seconds.
+
+---
+
+## Community vs Pro
+
+Everything in this guide works with the free Community binary. Security is identical in both editions.
+
+| Feature | Community (Free) | Pro (Coming Soon) |
+|---------|:----------------:|:------------------:|
+| Encrypted vault (AES-256-GCM + Argon2id) | ✓ | ✓ |
+| Handle protocol (opaque, single-use) | ✓ | ✓ |
+| SSRF protection + domain binding | ✓ | ✓ |
+| 5 MCP tools | ✓ | ✓ |
+| Secrets | 10 | Unlimited |
+| Environments | 1 | Unlimited |
+| Templates | 26 | 115 |
+| `hermetic scan` (credential scanner) | — | ✓ |
+| OAuth2 lifecycle | — | ✓ |
+| AWS SigV4 signing | — | ✓ |
+| TUI dashboard (`hermetic dashboard`) | — | ✓ |
+| Web dashboard (`hermetic web`) | — | ✓ |
+| Token monitoring | — | ✓ |
 
 ---
 
