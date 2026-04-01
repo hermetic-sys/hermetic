@@ -1,5 +1,4 @@
 # Hermetic CODEOWNERS
-# Update @hermetic-sys/maintainers with actual GitHub username(s) after org creation.
 
 # Default owner for everything
 * @hermetic-sys/maintainers
