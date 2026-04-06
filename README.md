@@ -310,7 +310,11 @@ The agent gets tools for brokered API calls, transient credential injection, sec
 
 ## OpenClaw Integration
 
+<img src="assets/openclaw-logo.jpg" alt="OpenClaw" width="80" align="left" style="margin-right: 16px;">
+
 [OpenClaw](https://github.com/openclaw) uses exec providers to resolve secrets at runtime. Hermetic is a drop-in exec provider — the fastest in the ecosystem.
+
+<br clear="left">
 
 ### Setup
 
