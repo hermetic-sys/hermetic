@@ -33,4 +33,4 @@ jobs:
       - name: Deny
         run: |
           cargo install cargo-deny --locked
-          cargo deny check
+          cargo deny check licenses sources
