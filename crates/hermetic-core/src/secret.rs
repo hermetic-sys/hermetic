@@ -59,9 +59,25 @@ impl Sensitivity {
 pub fn classify_sensitivity_by_name(name: &str) -> Sensitivity {
     let lower = name.to_lowercase();
     const HIGH: &[&str] = &[
-        "stripe", "paypal", "plaid", "square", "wise", "coinbase", "shopify",
-        "aws", "google_cloud", "azure", "auth0", "clerk", "salesforce", "snowflake",
-        "payment", "billing", "production", "prod_", "live_",
+        "stripe",
+        "paypal",
+        "plaid",
+        "square",
+        "wise",
+        "coinbase",
+        "shopify",
+        "aws",
+        "google_cloud",
+        "azure",
+        "auth0",
+        "clerk",
+        "salesforce",
+        "snowflake",
+        "payment",
+        "billing",
+        "production",
+        "prod_",
+        "live_",
     ];
     const LOW: &[&str] = &[
         "test", "dev", "sandbox", "staging", "demo", "mock", "local", "example",
@@ -145,21 +161,33 @@ mod tests {
 
     #[test]
     fn classify_stripe_is_high() {
-        assert_eq!(classify_sensitivity_by_name("stripe_live_key"), Sensitivity::High);
+        assert_eq!(
+            classify_sensitivity_by_name("stripe_live_key"),
+            Sensitivity::High
+        );
     }
 
     #[test]
     fn classify_openai_is_standard() {
-        assert_eq!(classify_sensitivity_by_name("openai_key"), Sensitivity::Standard);
+        assert_eq!(
+            classify_sensitivity_by_name("openai_key"),
+            Sensitivity::Standard
+        );
     }
 
     #[test]
     fn classify_test_is_low() {
-        assert_eq!(classify_sensitivity_by_name("test_webhook"), Sensitivity::Low);
+        assert_eq!(
+            classify_sensitivity_by_name("test_webhook"),
+            Sensitivity::Low
+        );
     }
 
     #[test]
     fn classify_case_insensitive() {
-        assert_eq!(classify_sensitivity_by_name("PRODUCTION_DB"), Sensitivity::High);
+        assert_eq!(
+            classify_sensitivity_by_name("PRODUCTION_DB"),
+            Sensitivity::High
+        );
     }
 }

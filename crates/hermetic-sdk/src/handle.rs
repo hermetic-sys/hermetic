@@ -40,7 +40,11 @@ use zeroize::Zeroizing;
 use crate::types;
 
 /// Return type for clone_secret: (secret_bytes, auth_scheme, runtime).
-pub type ClonedSecret = (Zeroizing<Vec<u8>>, Option<String>, Arc<tokio::runtime::Runtime>);
+pub type ClonedSecret = (
+    Zeroizing<Vec<u8>>,
+    Option<String>,
+    Arc<tokio::runtime::Runtime>,
+);
 
 /// Opaque credential handle. Secret bytes NEVER leak to Python.
 #[pyclass]
@@ -104,15 +108,14 @@ impl SecretHandle {
         body: Option<Vec<u8>>,
     ) -> PyResult<types::HttpResponse> {
         // Clone secret (non-consuming — handle stays valid)
-        let (secret, scheme_str, runtime) = self.clone_secret().ok_or_else(|| {
-            types::HandleError::new_err("handle destroyed")
-        })?;
+        let (secret, scheme_str, runtime) = self
+            .clone_secret()
+            .ok_or_else(|| types::HandleError::new_err("handle destroyed"))?;
 
         // Parse auth scheme (PYSDK-A5)
-        let auth_scheme = hermetic_transport::auth::AuthScheme::parse(
-            scheme_str.as_deref().unwrap_or("bearer"),
-        )
-        .map_err(|e| types::TransportError::new_err(format!("invalid auth scheme: {e}")))?;
+        let auth_scheme =
+            hermetic_transport::auth::AuthScheme::parse(scheme_str.as_deref().unwrap_or("bearer"))
+                .map_err(|e| types::TransportError::new_err(format!("invalid auth scheme: {e}")))?;
 
         // Build TransportRequest — clone is consumed here, original stays in Mutex
         let request = hermetic_transport::executor::TransportRequest {
@@ -145,9 +148,9 @@ impl SecretHandle {
     ///
     /// Returns: HMAC-SHA256 signature as bytes.
     fn hmac_sign(&self, data: Vec<u8>) -> PyResult<Vec<u8>> {
-        let (secret, _scheme, _runtime) = self.clone_secret().ok_or_else(|| {
-            types::HandleError::new_err("handle destroyed")
-        })?;
+        let (secret, _scheme, _runtime) = self
+            .clone_secret()
+            .ok_or_else(|| types::HandleError::new_err("handle destroyed"))?;
 
         let key = hmac::Key::new(hmac::HMAC_SHA256, &secret);
         let tag = hmac::sign(&key, &data);
@@ -164,9 +167,9 @@ impl SecretHandle {
     ///
     /// Returns: True if signature is valid, False otherwise.
     fn hmac_verify(&self, data: Vec<u8>, signature: Vec<u8>) -> PyResult<bool> {
-        let (secret, _scheme, _runtime) = self.clone_secret().ok_or_else(|| {
-            types::HandleError::new_err("handle destroyed")
-        })?;
+        let (secret, _scheme, _runtime) = self
+            .clone_secret()
+            .ok_or_else(|| types::HandleError::new_err("handle destroyed"))?;
 
         let key = hmac::Key::new(hmac::HMAC_SHA256, &secret);
         Ok(hmac::verify(&key, &data, &signature).is_ok())

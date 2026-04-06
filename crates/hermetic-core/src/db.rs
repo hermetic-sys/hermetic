@@ -182,12 +182,8 @@ impl VaultDatabase {
             .unwrap_or(false);
 
         if !has_secret_type {
-            conn.execute_batch(
-                "ALTER TABLE secrets ADD COLUMN secret_type TEXT DEFAULT 'static';",
-            )
-            .map_err(|e| {
-                VaultError::Database(format!("V4 migration (secret_type): {}", e))
-            })?;
+            conn.execute_batch("ALTER TABLE secrets ADD COLUMN secret_type TEXT DEFAULT 'static';")
+                .map_err(|e| VaultError::Database(format!("V4 migration (secret_type): {}", e)))?;
         }
 
         Ok(VaultDatabase { conn })
@@ -353,7 +349,8 @@ impl VaultDatabase {
     #[allow(clippy::type_complexity)]
     pub fn list_secrets(
         &self,
-    ) -> Result<Vec<(String, String, String, String, Option<Vec<String>>, String)>, VaultError> {
+    ) -> Result<Vec<(String, String, String, String, Option<Vec<String>>, String)>, VaultError>
+    {
         let mut stmt = self
             .conn
             .prepare("SELECT name, sensitivity, created_at, COALESCE(tags, ''), allowed_domains, COALESCE(secret_type, 'static') FROM secrets ORDER BY name")

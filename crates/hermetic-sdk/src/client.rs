@@ -48,8 +48,8 @@ pub struct HermeticClient {
 impl HermeticClient {
     /// Send a DaemonRequest and read a DaemonResponse.
     fn send_request(&self, request: &DaemonRequest) -> Result<DaemonResponse, String> {
-        let payload = serde_json::to_vec(request)
-            .map_err(|e| format!("failed to serialize request: {e}"))?;
+        let payload =
+            serde_json::to_vec(request).map_err(|e| format!("failed to serialize request: {e}"))?;
 
         let mut stream = self
             .stream
@@ -64,8 +64,8 @@ impl HermeticClient {
         }
 
         // Reconnect and retry once
-        let new_stream = UnixStream::connect(&self.socket_path)
-            .map_err(|e| format!("reconnect failed: {e}"))?;
+        let new_stream =
+            UnixStream::connect(&self.socket_path).map_err(|e| format!("reconnect failed: {e}"))?;
         new_stream
             .set_read_timeout(Some(wire::UDS_TIMEOUT))
             .map_err(|e| format!("set read timeout: {e}"))?;
@@ -77,15 +77,10 @@ impl HermeticClient {
         Self::send_and_read(&mut stream, &payload)
     }
 
-    fn send_and_read(
-        stream: &mut UnixStream,
-        payload: &[u8],
-    ) -> Result<DaemonResponse, String> {
+    fn send_and_read(stream: &mut UnixStream, payload: &[u8]) -> Result<DaemonResponse, String> {
         wire::write_frame(stream, payload).map_err(|e| format!("write failed: {e}"))?;
-        let response_bytes =
-            wire::read_frame(stream).map_err(|e| format!("read failed: {e}"))?;
-        serde_json::from_slice(&response_bytes)
-            .map_err(|e| format!("invalid response: {e}"))
+        let response_bytes = wire::read_frame(stream).map_err(|e| format!("read failed: {e}"))?;
+        serde_json::from_slice(&response_bytes).map_err(|e| format!("invalid response: {e}"))
     }
 
     fn is_dead_connection(err: &str) -> bool {
@@ -113,11 +108,9 @@ impl HermeticClient {
     /// Extract domain from URL for handle binding (PYSDK-A2).
     fn extract_domain(url_str: &str) -> Option<String> {
         url::Url::parse(url_str).ok().and_then(|parsed| {
-            parsed.host_str().map(|h| {
-                h.to_ascii_lowercase()
-                    .trim_end_matches('.')
-                    .to_string()
-            })
+            parsed
+                .host_str()
+                .map(|h| h.to_ascii_lowercase().trim_end_matches('.').to_string())
         })
     }
 }
@@ -142,14 +135,10 @@ impl HermeticClient {
         })?;
         stream
             .set_read_timeout(Some(wire::UDS_TIMEOUT))
-            .map_err(|e| {
-                types::ConnectionError::new_err(format!("set read timeout: {e}"))
-            })?;
+            .map_err(|e| types::ConnectionError::new_err(format!("set read timeout: {e}")))?;
         stream
             .set_write_timeout(Some(wire::UDS_TIMEOUT))
-            .map_err(|e| {
-                types::ConnectionError::new_err(format!("set write timeout: {e}"))
-            })?;
+            .map_err(|e| types::ConnectionError::new_err(format!("set write timeout: {e}")))?;
 
         let runtime = tokio::runtime::Builder::new_current_thread()
             .enable_all()
@@ -237,9 +226,9 @@ impl HermeticClient {
             }
         };
 
-        let secret_bytes = STANDARD.decode(&secret_b64).map_err(|_| {
-            types::HandleError::new_err("invalid base64 in secret response")
-        })?;
+        let secret_bytes = STANDARD
+            .decode(&secret_b64)
+            .map_err(|_| types::HandleError::new_err("invalid base64 in secret response"))?;
 
         // Step C: Construct SecretHandle
         // PYSDK-A5: auth_scheme priority — redeemed > requested > default

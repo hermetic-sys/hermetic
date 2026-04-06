@@ -303,7 +303,9 @@ fn test_update_secret_value_roundtrip() {
 
     // Add initial secret
     let original = Zeroizing::new(b"original-value".to_vec());
-    vault.add_secret("test-key", &original, "standard", None, None).unwrap();
+    vault
+        .add_secret("test-key", &original, "standard", None, None)
+        .unwrap();
 
     // Verify original
     let retrieved = vault.get_secret_bytes("test-key").unwrap();
@@ -345,7 +347,15 @@ fn test_update_secret_value_empty_rejected() {
     Vault::init(dir.path(), &pass).unwrap();
     let vault = Vault::unlock(dir.path(), &pass).unwrap();
 
-    vault.add_secret("test-key", &Zeroizing::new(b"value".to_vec()), "standard", None, None).unwrap();
+    vault
+        .add_secret(
+            "test-key",
+            &Zeroizing::new(b"value".to_vec()),
+            "standard",
+            None,
+            None,
+        )
+        .unwrap();
 
     let empty = Zeroizing::new(Vec::new());
     let result = vault.update_secret_value("test-key", &empty);

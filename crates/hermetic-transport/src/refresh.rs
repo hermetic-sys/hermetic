@@ -54,14 +54,12 @@ pub fn execute_refresh(
     scopes: &[String],
 ) -> Result<RefreshResult, String> {
     // Build URL-encoded form body
-    let mut parts = vec![
-        format!(
-            "grant_type=refresh_token&client_id={}&client_secret={}&refresh_token={}",
-            urlencoded(client_id),
-            urlencoded(client_secret),
-            urlencoded(refresh_token),
-        ),
-    ];
+    let mut parts = vec![format!(
+        "grant_type=refresh_token&client_id={}&client_secret={}&refresh_token={}",
+        urlencoded(client_id),
+        urlencoded(client_secret),
+        urlencoded(refresh_token),
+    )];
     let scope_str = scopes.join(" ");
     if !scope_str.is_empty() {
         parts.push(format!("&scope={}", urlencoded(&scope_str)));
@@ -78,10 +76,7 @@ pub fn execute_refresh(
                 "Content-Type".to_string(),
                 "application/x-www-form-urlencoded".to_string(),
             ),
-            (
-                "Accept".to_string(),
-                "application/json".to_string(),
-            ),
+            ("Accept".to_string(), "application/json".to_string()),
         ],
         body: Some(body.into_bytes()),
         credential: None,
@@ -107,17 +102,21 @@ pub fn execute_refresh(
     }
 
     // Parse JSON response
-    let json: serde_json::Value = serde_json::from_slice(&response.body)
-        .map_err(|e| format!("json parse: {e}"))?;
+    let json: serde_json::Value =
+        serde_json::from_slice(&response.body).map_err(|e| format!("json parse: {e}"))?;
 
-    let access_token = json["access_token"]
-        .as_str()
-        .ok_or_else(|| {
-            // Include provider error for diagnostics (no secrets in this message)
-            let err = json.get("error").and_then(|e| e.as_str()).unwrap_or("unknown");
-            let desc = json.get("error_description").and_then(|e| e.as_str()).unwrap_or("");
-            format!("missing access_token: error={err}, description={desc}")
-        })?;
+    let access_token = json["access_token"].as_str().ok_or_else(|| {
+        // Include provider error for diagnostics (no secrets in this message)
+        let err = json
+            .get("error")
+            .and_then(|e| e.as_str())
+            .unwrap_or("unknown");
+        let desc = json
+            .get("error_description")
+            .and_then(|e| e.as_str())
+            .unwrap_or("");
+        format!("missing access_token: error={err}, description={desc}")
+    })?;
 
     Ok(RefreshResult {
         access_token: Zeroizing::new(access_token.to_string()),

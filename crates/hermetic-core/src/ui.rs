@@ -700,18 +700,9 @@ pub fn code_line(text: &str) {
 /// Each step is a string like "hermetic list  — verify your secrets".
 pub fn next_steps(steps: &[&str]) {
     gap();
-    eprintln!(
-        "  {}  What's next:{}",
-        Colors::muted(),
-        reset()
-    );
+    eprintln!("  {}  What's next:{}", Colors::muted(), reset());
     for step_text in steps {
-        eprintln!(
-            "  {}  → {}{}",
-            Colors::dim(),
-            step_text,
-            reset()
-        );
+        eprintln!("  {}  → {}{}", Colors::dim(), step_text, reset());
     }
 }
 

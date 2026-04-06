@@ -282,7 +282,10 @@ mod tests {
 
         mgr.save(passphrase, &secret).unwrap();
         let loaded = mgr.load(&secret).unwrap();
-        assert_eq!(loaded.as_ref().map(|p| p.as_slice()), Some(passphrase.as_slice()));
+        assert_eq!(
+            loaded.as_ref().map(|p| p.as_slice()),
+            Some(passphrase.as_slice())
+        );
     }
 
     /// T-S2: load with wrong install_secret → None (GCM auth fails).

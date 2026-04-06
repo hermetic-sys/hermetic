@@ -58,10 +58,7 @@ pub enum MigrationResult {
 /// The connection is dropped before returning so VaultDatabase::open() can
 /// acquire the file exclusively.
 #[cfg(not(target_os = "windows"))]
-fn pre_migration_secret_count(
-    db_path: &Path,
-    db_key: &[u8],
-) -> Result<usize, VaultError> {
+fn pre_migration_secret_count(db_path: &Path, db_key: &[u8]) -> Result<usize, VaultError> {
     // VaultDatabase::open() runs migrations, but we need the count BEFORE that.
     // Open a raw connection with just the PRAGMA key, count secrets, then close.
     let conn = rusqlite::Connection::open(db_path)
@@ -96,23 +93,22 @@ fn backup_vault(db_path: &Path, from_version: &str) -> Result<PathBuf, VaultErro
         .unwrap_or_default()
         .as_secs();
     let safe_version = from_version.replace('.', "_");
-    let backup_path = db_path.with_extension(
-        format!("db.v{}.{}.{}.bak", safe_version, ts, std::process::id()),
-    );
+    let backup_path = db_path.with_extension(format!(
+        "db.v{}.{}.{}.bak",
+        safe_version,
+        ts,
+        std::process::id()
+    ));
     let temp_path = db_path.with_extension("db.backup.tmp");
-    std::fs::copy(db_path, &temp_path).map_err(|e| {
-        VaultError::IoError(format!("backup copy: {}", e))
-    })?;
-    let f = std::fs::File::open(&temp_path).map_err(|e| {
-        VaultError::IoError(format!("backup fsync open: {}", e))
-    })?;
-    f.sync_all().map_err(|e| {
-        VaultError::IoError(format!("backup fsync: {}", e))
-    })?;
+    std::fs::copy(db_path, &temp_path)
+        .map_err(|e| VaultError::IoError(format!("backup copy: {}", e)))?;
+    let f = std::fs::File::open(&temp_path)
+        .map_err(|e| VaultError::IoError(format!("backup fsync open: {}", e)))?;
+    f.sync_all()
+        .map_err(|e| VaultError::IoError(format!("backup fsync: {}", e)))?;
     drop(f);
-    std::fs::rename(&temp_path, &backup_path).map_err(|e| {
-        VaultError::IoError(format!("backup rename: {}", e))
-    })?;
+    std::fs::rename(&temp_path, &backup_path)
+        .map_err(|e| VaultError::IoError(format!("backup rename: {}", e)))?;
     // fsync parent directory for rename durability
     if let Some(parent) = backup_path.parent() {
         if let Ok(dir) = std::fs::File::open(parent) {
@@ -137,19 +133,15 @@ fn verify_migration_integrity(
     if post_count_raw != pre_count || post_count_dec != pre_count {
         // Atomic restore from backup
         let temp = db_path.with_extension("db.restoring");
-        std::fs::copy(backup_path, &temp).map_err(|e| {
-            VaultError::MigrationRestoreFailed(format!("copy backup: {}", e))
-        })?;
-        let f = std::fs::File::open(&temp).map_err(|e| {
-            VaultError::MigrationRestoreFailed(format!("fsync open: {}", e))
-        })?;
-        f.sync_all().map_err(|e| {
-            VaultError::MigrationRestoreFailed(format!("fsync: {}", e))
-        })?;
+        std::fs::copy(backup_path, &temp)
+            .map_err(|e| VaultError::MigrationRestoreFailed(format!("copy backup: {}", e)))?;
+        let f = std::fs::File::open(&temp)
+            .map_err(|e| VaultError::MigrationRestoreFailed(format!("fsync open: {}", e)))?;
+        f.sync_all()
+            .map_err(|e| VaultError::MigrationRestoreFailed(format!("fsync: {}", e)))?;
         drop(f);
-        std::fs::rename(&temp, db_path).map_err(|e| {
-            VaultError::MigrationRestoreFailed(format!("rename: {}", e))
-        })?;
+        std::fs::rename(&temp, db_path)
+            .map_err(|e| VaultError::MigrationRestoreFailed(format!("rename: {}", e)))?;
         if let Some(parent) = db_path.parent() {
             if let Ok(dir) = std::fs::File::open(parent) {
                 let _ = dir.sync_all();
@@ -376,15 +368,9 @@ impl Vault {
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt;
-            let _ = std::fs::set_permissions(
-                &db_path,
-                std::fs::Permissions::from_mode(0o600),
-            );
+            let _ = std::fs::set_permissions(&db_path, std::fs::Permissions::from_mode(0o600));
             let salt_path = path.join("vault.salt");
-            let _ = std::fs::set_permissions(
-                &salt_path,
-                std::fs::Permissions::from_mode(0o600),
-            );
+            let _ = std::fs::set_permissions(&salt_path, std::fs::Permissions::from_mode(0o600));
         }
 
         Ok(())
@@ -678,7 +664,8 @@ impl Vault {
         // Clear the tag first: hermetic reveal --clear (passphrase-gated).
         if self.get_reveal_key_name() == Some(name) {
             return Err(VaultError::Denied {
-                reason: "secret is tagged as reveal key; clear first: hermetic reveal --clear".into(),
+                reason: "secret is tagged as reveal key; clear first: hermetic reveal --clear"
+                    .into(),
             });
         }
 
@@ -926,7 +913,11 @@ impl Vault {
     /// HM-EXEC-REVEAL-001 R-15: Public audit entry writer for daemon dispatch.
     /// Fail-closed: AuditFailure → SEAL. Must be called BEFORE returning secret value.
     #[cfg(not(target_os = "windows"))]
-    pub fn write_audit_entry_public(&self, action: &str, secret_name: Option<&str>) -> Result<(), VaultError> {
+    pub fn write_audit_entry_public(
+        &self,
+        action: &str,
+        secret_name: Option<&str>,
+    ) -> Result<(), VaultError> {
         self.write_audit_entry(action, secret_name)
     }
 

@@ -814,8 +814,18 @@ fn test_error_variant_exhaustiveness() {
         // Day 7 new variant
         (VaultError::EmptySecret, FailClosedAction::Deny),
         // V1.0 migration variants
-        (VaultError::MigrationIntegrityFail { expected: 5, got_raw: 4, got_dec: 4 }, FailClosedAction::Seal),
-        (VaultError::MigrationRestoreFailed("test".into()), FailClosedAction::Seal),
+        (
+            VaultError::MigrationIntegrityFail {
+                expected: 5,
+                got_raw: 4,
+                got_dec: 4,
+            },
+            FailClosedAction::Seal,
+        ),
+        (
+            VaultError::MigrationRestoreFailed("test".into()),
+            FailClosedAction::Seal,
+        ),
     ];
 
     // Verify count: 24 variants (22 original + 2 migration variants)

@@ -466,7 +466,9 @@ mod tests {
 
     use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 
-    use super::{execute, filter_response_headers, TransportRequest, MAX_REDIRECTS, MAX_RESPONSE_BYTES};
+    use super::{
+        execute, filter_response_headers, TransportRequest, MAX_REDIRECTS, MAX_RESPONSE_BYTES,
+    };
     use crate::error::TransportError;
     use crate::ssrf::DnsResolver;
 
@@ -566,10 +568,7 @@ mod tests {
             ("Content-Type".into(), "application/json".into()),
             ("Accept".into(), "text/html".into()),
         ];
-        assert!(
-            !has_user_agent_header(&headers),
-            "no User-Agent in headers"
-        );
+        assert!(!has_user_agent_header(&headers), "no User-Agent in headers");
         assert_eq!(DEFAULT_USER_AGENT, "Hermetic/1.0");
     }
 
@@ -594,7 +593,10 @@ mod tests {
         assert!(has_user_agent_header(&[("user-agent".into(), "x".into())]));
         assert!(has_user_agent_header(&[("User-Agent".into(), "x".into())]));
         assert!(has_user_agent_header(&[("USER-AGENT".into(), "x".into())]));
-        assert!(!has_user_agent_header(&[("Content-Type".into(), "x".into())]));
+        assert!(!has_user_agent_header(&[(
+            "Content-Type".into(),
+            "x".into()
+        )]));
     }
 
     #[test]
@@ -892,10 +894,7 @@ mod tests {
     fn user_agent_empty_value_still_detected() {
         use super::has_user_agent_header;
         // Empty User-Agent value still means the header exists
-        assert!(has_user_agent_header(&[(
-            "User-Agent".into(),
-            "".into()
-        )]));
+        assert!(has_user_agent_header(&[("User-Agent".into(), "".into())]));
     }
 
     #[test]
@@ -1035,7 +1034,9 @@ mod tests {
     fn redirect_url_with_userinfo_rejected() {
         let url = url::Url::parse("https://user:pass@example.com/").unwrap();
         let result = super::validate_redirect_url(&url);
-        assert!(matches!(result, Err(TransportError::InvalidUrl(ref msg)) if msg.contains("embedded credentials")));
+        assert!(
+            matches!(result, Err(TransportError::InvalidUrl(ref msg)) if msg.contains("embedded credentials"))
+        );
     }
 
     #[test]
@@ -1049,14 +1050,20 @@ mod tests {
     fn redirect_url_http_scheme_rejected() {
         let url = url::Url::parse("http://example.com/path").unwrap();
         let result = super::validate_redirect_url(&url);
-        assert!(matches!(result, Err(TransportError::RedirectSchemeDowngrade)));
+        assert!(matches!(
+            result,
+            Err(TransportError::RedirectSchemeDowngrade)
+        ));
     }
 
     #[test]
     fn redirect_url_ftp_scheme_rejected() {
         let url = url::Url::parse("ftp://example.com/file").unwrap();
         let result = super::validate_redirect_url(&url);
-        assert!(matches!(result, Err(TransportError::RedirectSchemeDowngrade)));
+        assert!(matches!(
+            result,
+            Err(TransportError::RedirectSchemeDowngrade)
+        ));
     }
 
     #[test]

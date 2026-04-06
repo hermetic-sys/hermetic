@@ -112,8 +112,8 @@ fn persistence_across_reopen() {
             "",
             "2026-02-08",
             None,
-        "static",
-    )
+            "static",
+        )
         .unwrap_or_else(|e| panic!("store: {:?}", e));
     }
 
