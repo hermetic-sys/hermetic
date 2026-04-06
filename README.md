@@ -74,7 +74,7 @@ The credential **never enters the agent's address space**. Not in memory. Not in
 curl -sSf https://hermeticsys.com/install.sh | sh
 ```
 
-Single binary. No dependencies. No Docker. No cloud account. No telemetry.
+Single static binary (Rust, no runtime dependencies). No Docker. No cloud account. No telemetry.
 
 ---
 
