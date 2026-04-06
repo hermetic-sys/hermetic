@@ -1,13 +1,5 @@
-# Hermetic Release Signing Key
-#
-# This file will contain the GPG public key for verifying release signatures.
-#
-# To verify a release:
-#   gpg --import SIGNING_KEY.pub
-#   gpg --verify hermetic-v1.0.0-linux-x86_64.tar.gz.asc
-#
-# The key has not been generated yet. This is a placeholder.
-# Once the CA generates the key, this file will be updated.
-#
-# Key identity: The Hermetic Project <dev@hermeticsys.com>
-# Key type: RSA 4096
+GPG signing key will be published with the next release.
+
+Binary integrity can be verified via SHA256SUMS in the GitHub Release.
+
+Contact: dev@hermeticsys.com

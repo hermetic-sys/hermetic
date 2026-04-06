@@ -131,29 +131,32 @@ ok "Installed to $INSTALL_DIR/hermetic"
 
 # ── GPG signature verification (--verify) ──
 if [ "$VERIFY" = true ]; then
-  info "Verifying GPG signature..."
-
-  if ! command -v gpg >/dev/null 2>&1; then
-    warn "gpg not found — cannot verify signature"
-    warn "Install gnupg to enable verification"
-  else
-    curl -sSL -o "${TMPDIR}/hermetic.tar.gz.asc" \
-      "${RELEASE_URL}.asc" 2>/dev/null || true
-    curl -sSL -o "${TMPDIR}/SIGNING_KEY.pub" \
-      "https://raw.githubusercontent.com/hermetic-sys/Hermetic/main/SIGNING_KEY.pub" 2>/dev/null || true
-
-    if [ -f "${TMPDIR}/hermetic.tar.gz.asc" ] && [ -f "${TMPDIR}/SIGNING_KEY.pub" ]; then
-      gpg --batch --import "${TMPDIR}/SIGNING_KEY.pub" 2>/dev/null
-      if gpg --batch --verify "${TMPDIR}/hermetic.tar.gz.asc" "${TMPDIR}/hermetic.tar.gz" 2>/dev/null; then
-        ok "GPG signature verified"
-      else
-        fail "GPG signature verification FAILED — binary may have been tampered with"
-      fi
+  warn "GPG signing is planned for v1.0.1. Binary integrity is verified via SHA256SUMS."
+  warn "Download SHA256SUMS from the GitHub Release page to verify your binary."
+  if false; then
+    # GPG verification — re-enable when signing key is published
+    info "Verifying GPG signature..."
+    if ! command -v gpg >/dev/null 2>&1; then
+      warn "gpg not found — cannot verify signature"
+      warn "Install gnupg to enable verification"
     else
-      warn "Signature not available (release may not be signed yet)"
-      warn "Continuing without verification..."
+      curl -sSL -o "${TMPDIR}/hermetic.tar.gz.asc" \
+        "${RELEASE_URL}.asc" 2>/dev/null || true
+      curl -sSL -o "${TMPDIR}/SIGNING_KEY.pub" \
+        "https://raw.githubusercontent.com/hermetic-sys/Hermetic/main/SIGNING_KEY.pub" 2>/dev/null || true
+      if [ -f "${TMPDIR}/hermetic.tar.gz.asc" ] && [ -f "${TMPDIR}/SIGNING_KEY.pub" ]; then
+        gpg --batch --import "${TMPDIR}/SIGNING_KEY.pub" 2>/dev/null
+        if gpg --batch --verify "${TMPDIR}/hermetic.tar.gz.asc" "${TMPDIR}/hermetic.tar.gz" 2>/dev/null; then
+          ok "GPG signature verified"
+        else
+          fail "GPG signature verification FAILED — binary may have been tampered with"
+        fi
+      else
+        warn "Signature not available (release may not be signed yet)"
+        warn "Continuing without verification..."
     fi
   fi
+  fi  # end if false (GPG disabled until signing key published)
 fi
 
 # ── Verify PATH ──
