@@ -392,7 +392,7 @@ fn test_list_multiple_secrets_shows_all() {
                 None,
                 None,
             )
-            .expect(&format!("add {}", name));
+            .unwrap_or_else(|e| panic!("add {}: {}", name, e));
     }
 
     let secrets = vault.list_secrets().expect("list_secrets");
@@ -553,7 +553,7 @@ fn test_status_shows_correct_secret_count() {
                 None,
                 None,
             )
-            .expect(&format!("add secret_{}", i));
+            .unwrap_or_else(|e| panic!("add secret_{}: {}", i, e));
     }
 
     let status = vault.status();
